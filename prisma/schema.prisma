@@ -1,0 +1,215 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                   String    @id @default(uuid())
+  email                String    @unique
+  passwordHash         String
+  fullName             String?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+  lastLogin            DateTime?
+  emailVerified        Boolean   @default(false)
+  accountLocked        Boolean   @default(false)
+  failedLoginAttempts  Int       @default(0)
+  resetPasswordToken   String?
+  resetPasswordExpires DateTime?
+  isAdmin              Boolean   @default(false)
+  
+  sessions             Session[]
+  emailVerifications   EmailVerification[]
+  auditLogs            AuthAuditLog[]
+  orders               Order[]
+  media                Media[]
+  supportTickets       SupportTicket[]
+  ticketReplies        TicketReply[]
+
+  @@map("users")
+}
+
+model Session {
+  id           String   @id @default(uuid())
+  userId       String
+  refreshToken String
+  expiresAt    DateTime
+  createdAt    DateTime @default(now())
+  ipAddress    String?
+  userAgent    String?
+  isValid      Boolean  @default(true)
+  
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model EmailVerification {
+  id                String   @id @default(uuid())
+  userId            String
+  verificationToken String
+  expiresAt         DateTime
+  createdAt         DateTime @default(now())
+  
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("email_verifications")
+}
+
+model AuthAuditLog {
+  id         String   @id @default(uuid())
+  userId     String?
+  eventType  String
+  ipAddress  String?
+  userAgent  String?
+  details    Json?
+  createdAt  DateTime @default(now())
+  
+  user       User?    @relation(fields: [userId], references: [id])
+
+  @@map("auth_audit_logs")
+}
+
+model Order {
+  id                String    @id @default(uuid())
+  orderId           String    @unique
+  userId            String
+  planId            String
+  planName          String
+  quantity          Int       @default(1)
+  duration          Int
+  location          String
+  locationCode      String?
+  status            String    // 'pending', 'paid', 'processing', 'active', 'cancelled', 'expired'
+  paymentMethod     String
+  transactionReference String?
+  paymentProofUrl   String?
+  subtotal          Float?
+  total             Float
+  ipAddress         String?
+  username          String?
+  password          String?
+  expiryDate        DateTime?
+  isInitialized     Boolean   @default(false)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("orders")
+}
+
+model Plan {
+  id          String        @id @default(uuid())
+  category_id Int
+  name        String
+  description String?
+  cpu         String
+  ram         String
+  storage     String
+  bandwidth   String
+  os          String?
+  price_pkr   Float
+  is_active   Boolean       @default(true)
+  theme_color String?       @default("sky")
+  label       String?
+  created_at  DateTime      @default(now())
+  updated_at  DateTime      @updatedAt
+  
+  features    PlanFeature[]
+
+  @@map("plans")
+}
+
+model PlanFeature {
+  id       String  @id @default(uuid())
+  plan_id  String
+  feature  String
+  
+  plan     Plan    @relation(fields: [plan_id], references: [id], onDelete: Cascade)
+
+  @@map("plan_features")
+}
+
+enum MediaStatus {
+  approved
+  pending
+  rejected
+  flagged
+}
+
+model Media {
+  id            String      @id @default(uuid())
+  userId        String
+  user          User        @relation(fields: [userId], references: [id])
+  fileName      String
+  fileType      String
+  fileSize      Int
+  path          String
+  thumbnailPath String
+  status        MediaStatus @default(pending)
+  tags          Json
+  orderId       String?
+  uploadDate    DateTime    @default(now())
+}
+
+enum TicketStatus {
+  open
+  closed
+  resolved
+}
+
+enum TicketPriority {
+  low
+  medium
+  high
+}
+
+enum TicketCategory {
+  billing
+  technical
+  account
+  other
+}
+
+model SupportTicket {
+  id          String         @id @default(uuid())
+  subject     String
+  status      TicketStatus   @default(open)
+  priority    TicketPriority @default(medium)
+  category    TicketCategory
+  userId      String
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  
+  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  replies     TicketReply[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([category])
+  @@index([createdAt])
+}
+
+model TicketReply {
+  id           String       @id @default(uuid())
+  message      String
+  isStaffReply Boolean      @default(false)
+  staffName    String?
+  userId       String?
+  ticketId     String
+  createdAt    DateTime     @default(now())
+  
+  user         User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+  ticket       SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+  @@index([ticketId])
+  @@index([createdAt])
+}
