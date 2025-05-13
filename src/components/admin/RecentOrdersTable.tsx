@@ -4,8 +4,6 @@ import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ChevronRight, RefreshCcw, Check, Clock, XCircle, AlertCircle, Package } from "lucide-react";
-import { format } from "date-fns";
 
 interface Order {
   id: string;

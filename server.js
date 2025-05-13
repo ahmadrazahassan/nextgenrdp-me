@@ -7,11 +7,43 @@ const app = express();
 app.use(cors());
 
 const server = http.createServer(app);
+
+// Define allowed origins based on environment
+const getAllowedOrigins = () => {
+  // In production, use the actual domain
+  if (process.env.NODE_ENV === "production") {
+    const domains = [];
+    
+    // Add the main Vercel deployment URL
+    if (process.env.VERCEL_URL) {
+      domains.push(`https://${process.env.VERCEL_URL}`);
+    }
+    
+    // Add custom domain if available
+    if (process.env.NEXT_PUBLIC_SITE_URL) {
+      domains.push(process.env.NEXT_PUBLIC_SITE_URL);
+    }
+    
+    // Add a fallback domain if needed
+    domains.push("https://your-domain.com"); // Replace with your actual domain
+    
+    return domains;
+  }
+  
+  // In development, allow localhost
+  return ["http://localhost:3000"];
+};
+
 const io = new Server(server, {
   cors: {
-    origin: "*", // In production, specify your domain
-    methods: ["GET", "POST"]
-  }
+    origin: getAllowedOrigins(),
+    methods: ["GET", "POST"],
+    credentials: true
+  },
+  // Add more Socket.IO options for production
+  transports: ["websocket", "polling"],
+  // Add a path if needed for custom routing in Vercel
+  path: process.env.SOCKET_IO_PATH || "/socket.io"
 });
 
 // Store connected users
@@ -75,7 +107,8 @@ app.post("/api/send-notification", express.json(), (req, res) => {
   }
 });
 
+// Dynamic port for Vercel
 const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`Socket.IO server running on port ${PORT}`);
 });
