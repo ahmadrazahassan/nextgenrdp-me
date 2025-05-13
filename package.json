@@ -131,10 +131,8 @@
     "@types/nodemailer": "^6.4.11",
     "@types/react": "^18.2.31",
     "@types/uuid": "^9.0.8",
-    "autoprefixer": "^10.4.21",
     "eslint": "^8.52.0",
     "eslint-config-next": "^14.0.0",
-    "postcss": "^8.5.3",
     "prisma": "^5.4.2",
     "typescript": "^5.2.2"
   },
