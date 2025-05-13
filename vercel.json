@@ -3,8 +3,8 @@
     "silent": true
   },
   "framework": "nextjs",
-  "buildCommand": "npm run build",
-  "installCommand": "npm install --legacy-peer-deps",
+  "buildCommand": "npm run build --legacy-peer-deps --no-fund --no-audit",
+  "installCommand": "npm install --legacy-peer-deps --no-fund --no-audit --force",
   "rewrites": [
     {
       "source": "/api/socket",
