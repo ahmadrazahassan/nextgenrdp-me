@@ -1,120 +1,133 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import React from 'react';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { ChevronRight, RefreshCcw, Check, Clock, XCircle, AlertCircle, Package } from "lucide-react";
 import { format } from "date-fns";
 
 interface Order {
   id: string;
   orderId: string;
-  planName: string;
-  status: string;
-  total: number;
-  createdAt: string;
-  customerName: string;
+  customer: string;
+  product: string;
+  date: string;
+  status: 'pending' | 'paid' | 'processing' | 'active' | 'cancelled' | 'expired';
+  amount: string;
 }
 
-interface RecentOrdersTableProps {
-  orders?: Order[];
-}
+// Sample data for demonstration
+const recentOrders: Order[] = [
+  {
+    id: '1',
+    orderId: 'ORD-001',
+    customer: 'John Doe',
+    product: 'VPS Basic Plan',
+    date: '2025-05-01',
+    status: 'paid',
+    amount: '$25.99',
+  },
+  {
+    id: '2',
+    orderId: 'ORD-002',
+    customer: 'Jane Smith',
+    product: 'RDP Standard Plan',
+    date: '2025-05-05',
+    status: 'processing',
+    amount: '$49.99',
+  },
+  {
+    id: '3',
+    orderId: 'ORD-003',
+    customer: 'Bob Johnson',
+    product: 'VPS Premium Plan',
+    date: '2025-05-07',
+    status: 'active',
+    amount: '$79.99',
+  },
+  {
+    id: '4',
+    orderId: 'ORD-004',
+    customer: 'Alice Brown',
+    product: 'RDP Basic Plan',
+    date: '2025-05-08',
+    status: 'pending',
+    amount: '$19.99',
+  },
+  {
+    id: '5',
+    orderId: 'ORD-005',
+    customer: 'Charlie Wilson',
+    product: 'VPS Standard Plan',
+    date: '2025-05-10',
+    status: 'cancelled',
+    amount: '$59.99',
+  },
+];
 
-export function RecentOrdersTable({ orders = [] }: RecentOrdersTableProps) {
-  // Format date for display
-  const formatDate = (dateString: string) => {
-    return format(new Date(dateString), "MMM dd, yyyy");
-  };
-
-  // Get badge styling based on status
-  const getStatusBadge = (status: string) => {
-    switch (status.toLowerCase()) {
-      case "active":
-        return (
-          <Badge className="bg-green-100 text-green-800 hover:bg-green-200 border border-green-200 font-medium shadow-sm px-2.5 py-0.5">
-            <Check className="h-3 w-3 mr-1" />
-            Active
-          </Badge>
-        );
-      case "pending":
-        return (
-          <Badge className="bg-amber-100 text-amber-800 hover:bg-amber-200 border border-amber-200 font-medium shadow-sm px-2.5 py-0.5">
-            <Clock className="h-3 w-3 mr-1" />
-            Pending
-          </Badge>
-        );
-      case "processing":
-        return (
-          <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-200 border border-blue-200 font-medium shadow-sm px-2.5 py-0.5">
-            <RefreshCcw className="h-3 w-3 mr-1" />
-            Processing
-          </Badge>
-        );
-      case "cancelled":
-        return (
-          <Badge className="bg-red-100 text-red-800 hover:bg-red-200 border border-red-200 font-medium shadow-sm px-2.5 py-0.5">
-            <XCircle className="h-3 w-3 mr-1" />
-            Cancelled
-          </Badge>
-        );
-      default:
-        return (
-          <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-200 border border-gray-200 font-medium shadow-sm px-2.5 py-0.5">
-            <AlertCircle className="h-3 w-3 mr-1" />
-            {status}
-          </Badge>
-        );
-    }
-  };
-
-  if (orders.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center p-10 text-center">
-        <div className="h-20 w-20 bg-gray-100 text-gray-400 rounded-full flex items-center justify-center mb-5 shadow-inner border border-gray-200">
-          <Package className="h-10 w-10" />
-        </div>
-        <h3 className="text-xl font-semibold text-gray-900">No Recent Orders</h3>
-        <p className="text-sm text-gray-500 mt-2 max-w-xs">
-          New orders will appear here as they come in
-        </p>
-      </div>
-    );
+const getStatusColor = (status: Order['status']) => {
+  switch (status) {
+    case 'pending':
+      return 'secondary';
+    case 'paid':
+      return 'default';
+    case 'processing':
+      return 'secondary';
+    case 'active':
+      return 'default';
+    case 'cancelled':
+      return 'destructive';
+    case 'expired':
+      return 'outline';
+    default:
+      return 'secondary';
   }
+};
 
+export default function RecentOrdersTable() {
   return (
-    <div className="space-y-4 p-6">
-      {orders.map((order) => (
-        <div
-          key={order.id}
-          className="flex items-center justify-between p-4 rounded-lg bg-white border border-gray-200 hover:border-blue-300 hover:bg-blue-50/30 transition-all duration-200 shadow-sm hover:shadow-md"
-        >
-          <div className="space-y-1">
-            <div className="flex items-center">
-              <span className="font-medium text-gray-900">{order.customerName}</span>
-              <span className="mx-2 text-gray-300">•</span>
-              <span className="text-sm text-blue-600 font-medium">#{order.orderId}</span>
-            </div>
-            <div className="flex items-center">
-              <span className="text-sm text-gray-600">{order.planName}</span>
-              <span className="mx-2 text-gray-300">•</span>
-              <span className="text-sm text-gray-500">{formatDate(order.createdAt)}</span>
-            </div>
-          </div>
-          <div className="flex items-center space-x-4">
-            <div>{getStatusBadge(order.status)}</div>
-            <div className="text-sm font-semibold text-gray-900 whitespace-nowrap">
-              PKR {order.total.toLocaleString()}
-            </div>
-            <Button variant="outline" size="sm" className="h-8 w-8 p-0 text-gray-500 hover:text-blue-600 border border-gray-200 hover:border-blue-300 hover:bg-blue-50 rounded-full shadow-sm">
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </div>
+    <Card>
+      <CardHeader>
+        <CardTitle>Recent Orders</CardTitle>
+        <CardDescription>A list of recent orders across your platform</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b">
+                <th className="py-3 text-left font-medium">Order ID</th>
+                <th className="py-3 text-left font-medium">Customer</th>
+                <th className="py-3 text-left font-medium">Product</th>
+                <th className="py-3 text-left font-medium">Date</th>
+                <th className="py-3 text-left font-medium">Status</th>
+                <th className="py-3 text-left font-medium">Amount</th>
+                <th className="py-3 text-left font-medium">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {recentOrders.map((order) => (
+                <tr key={order.id} className="border-b">
+                  <td className="py-3">{order.orderId}</td>
+                  <td className="py-3">{order.customer}</td>
+                  <td className="py-3">{order.product}</td>
+                  <td className="py-3">{order.date}</td>
+                  <td className="py-3">
+                    <Badge variant={getStatusColor(order.status)}>
+                      {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                    </Badge>
+                  </td>
+                  <td className="py-3">{order.amount}</td>
+                  <td className="py-3">
+                    <Button variant="outline" size="sm">View</Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-      ))}
-      <div className="text-center pt-2">
-        <Button variant="outline" className="text-blue-600 hover:text-blue-700 hover:bg-blue-50 border border-blue-200 px-5 py-2 shadow-sm">
-          View all orders
-        </Button>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 } 
