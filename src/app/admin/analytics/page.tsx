@@ -2,12 +2,12 @@
 
 import { useEffect, useState, Suspense, useRef } from "react";
 import dynamic from "next/dynamic";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
+import { Badge } from "../../ui/badge";
+import { Button } from "../../ui/button";
 import { RefreshCcw, TrendingUp, TrendingDown, Users, ShoppingCart, DollarSign, Clock } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import RecentOrdersTable from "@/components/admin/RecentOrdersTable";
+import RecentOrdersTable from "../RecentOrdersTable";
 
 // Temporary mock chart component until the real one is available
 const AnalyticsChart = ({ type, range }: { type: string, range: string }) => (

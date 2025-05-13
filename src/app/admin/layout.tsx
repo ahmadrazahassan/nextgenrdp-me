@@ -13,13 +13,13 @@ import {
   FileText,
   Upload
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Badge } from "../ui/badge";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
-import { Separator } from "@/components/ui/separator";
+import { Separator } from "../ui/separator";
 
 interface NavItem {
   title: string;
