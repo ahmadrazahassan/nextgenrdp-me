@@ -1,9 +1,9 @@
 "use client";
 
 import React from 'react';
-import { Badge } from '@/app/ui/badge';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/app/ui/card';
-import { Button } from '@/app/ui/button';
+import { Badge } from '../ui/badge';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
+import { Button } from '../ui/button';
 
 interface Order {
   id: string;

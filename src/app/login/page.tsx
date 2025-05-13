@@ -8,13 +8,13 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "react-hot-toast";
-import { useSession } from "@/components/providers/SessionProvider";
+import { useSession } from "../../components/providers/SessionProvider";
 import { FiMail, FiLock, FiEye, FiEyeOff, FiGithub, FiTwitter } from "react-icons/fi";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
 import { LuFingerprint } from "react-icons/lu";
 import { RiShieldKeyholeLine } from "react-icons/ri";
-import { isLoggedIn } from "@/lib/clientAuth";
+import { isLoggedIn } from "../../lib/clientAuth";
 
 // Login form schema with validation
 const loginSchema = z.object({
