@@ -1,8 +1,16 @@
 {
-  "version": 2,
-  "buildCommand": "npm install --no-audit --no-fund --legacy-peer-deps && npm run build",
-  "installCommand": "npm install --legacy-peer-deps",
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/next"
+    }
+  ],
+  "github": {
+    "silent": true
+  },
   "framework": "nextjs",
+  "buildCommand": "npm run build",
+  "installCommand": "npm install --legacy-peer-deps",
   "rewrites": [
     {
       "source": "/api/socket",
